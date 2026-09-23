@@ -1,0 +1,71 @@
+{
+  "users": [
+    {"id":8930741536,"name":"Bill","email":"sean.maxwell@gmail.com","created":"2026-03-21T05:35:26.766Z"},
+    {"id":59836411208,"name":"John Smith","email":"john.smith@gmail.com","created":"2026-03-21T05:35:26.766Z"},
+    {"id":924320326056,"name":"Gordan Freeman","email":"gordan.freeman@gmail.com","created":"2026-03-21T05:35:26.766Z"}
+  ],
+  "equipment": [
+    {
+      "id": "aaaaaaaa-1111-4111-8111-111111111111",
+      "name": "Test Turbine X1",
+      "type": "turbine",
+      "serialNumber": "TEST-TRB-X1",
+      "location": { "lat": 10, "lon": 20 },
+      "status": "operational",
+      "installedAt": "2023-06-01T00:00:00.000Z"
+    },
+    {
+      "id": "bbbbbbbb-2222-4222-8222-222222222222",
+      "name": "Test Inverter X2",
+      "type": "inverter",
+      "serialNumber": "TEST-INV-X2",
+      "location": { "lat": 11, "lon": 21 },
+      "status": "fault",
+      "installedAt": "2023-08-15T00:00:00.000Z"
+    },
+    {
+      "id": "cccccccc-3333-4333-8333-333333333333",
+      "name": "Test Sensor X3",
+      "type": "sensor",
+      "serialNumber": "TEST-SNS-X3",
+      "location": { "lat": 12, "lon": 22 },
+      "status": "maintenance",
+      "installedAt": "2024-01-10T00:00:00.000Z"
+    }
+  ],
+  "maintenance": [
+    {
+      "id": "dddddddd-4444-4444-8444-444444444444",
+      "equipmentId": "aaaaaaaa-1111-4111-8111-111111111111",
+      "title": "Test maintenance new",
+      "description": "Fixture request in 'new' status.",
+      "priority": "low",
+      "status": "new",
+      "plannedAt": "2026-04-01T00:00:00.000Z",
+      "createdAt": "2026-03-01T00:00:00.000Z",
+      "updatedAt": "2026-03-01T00:00:00.000Z"
+    },
+    {
+      "id": "eeeeeeee-5555-4555-8555-555555555555",
+      "equipmentId": "bbbbbbbb-2222-4222-8222-222222222222",
+      "title": "Test maintenance in progress",
+      "description": "Fixture request in 'in_progress' status.",
+      "priority": "high",
+      "status": "in_progress",
+      "plannedAt": "2026-03-10T00:00:00.000Z",
+      "createdAt": "2026-03-05T00:00:00.000Z",
+      "updatedAt": "2026-03-06T00:00:00.000Z"
+    },
+    {
+      "id": "ffffffff-6666-4666-8666-666666666666",
+      "equipmentId": "cccccccc-3333-4333-8333-333333333333",
+      "title": "Test maintenance done",
+      "description": "Fixture request in 'done' status.",
+      "priority": "critical",
+      "status": "done",
+      "plannedAt": "2026-01-15T00:00:00.000Z",
+      "createdAt": "2026-01-10T00:00:00.000Z",
+      "updatedAt": "2026-01-16T00:00:00.000Z"
+    }
+  ]
+}
