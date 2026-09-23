@@ -4,7 +4,7 @@
     {"id":59836411208,"name":"John Smith","email":"john.smith@gmail.com","created":"2026-03-21T05:35:26.766Z"},
     {"id":924320326056,"name":"Gordan Freeman","email":"gordan.freeman@gmail.com","created":"2026-03-21T05:35:26.766Z"}
   ],
-  "equipment": [
+  "equipments": [
     {
       "id": "aaaaaaaa-1111-4111-8111-111111111111",
       "name": "Test Turbine X1",
@@ -33,7 +33,7 @@
       "installedAt": "2024-01-10T00:00:00.000Z"
     }
   ],
-  "maintenance": [
+  "maintenances": [
     {
       "id": "dddddddd-4444-4444-8444-444444444444",
       "equipmentId": "aaaaaaaa-1111-4111-8111-111111111111",

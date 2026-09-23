@@ -4,7 +4,7 @@
     {"id":310946254456,"name":"John Smith","email":"john.smith@example.com","created":"2024-03-22T05:20:55.079Z"},
     {"id":143027113460,"name":"Gordan Freeman","email":"nova@prospect.com","created":"2024-03-22T05:42:18.895Z"}
   ],
-  "equipment": [
+  "equipments": [
     {
       "id": "5f9c3e1a-1b2d-4c3e-8a4f-1a2b3c4d5e6f",
       "name": "Turbine Generator A1",
@@ -42,7 +42,7 @@
       "installedAt": "2019-07-20T14:45:00.000Z"
     }
   ],
-  "maintenance": [
+  "maintenances": [
     {
       "id": "1d3a7025-5f61-4a72-8e9d-5e6f7a8b9c0d",
       "equipmentId": "5f9c3e1a-1b2d-4c3e-8a4f-1a2b3c4d5e6f",
