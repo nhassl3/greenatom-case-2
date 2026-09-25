@@ -1,4 +1,4 @@
-import { IEquipment } from '@src/models/Equipment.model'
+import { IEquipment, IEquipmentPatch } from '@src/models/Equipment.model'
 import { v4 } from 'uuid'
 import orm from './MockOrm'
 
@@ -30,16 +30,21 @@ async function add(equipment: IEquipment): Promise<void> {
 	return orm.saveDb(db);
 }
 
-async function updateOne(id: string, equipment: IEquipment): Promise<void> {
+async function updateOne(id: string, equipment: IEquipmentPatch): Promise<void> {
 	const db = await orm.openDb();
 	for (let i = 0; i < db.equipments.length; i++) {
-		if (db.equipments[i].id === equipment.id) {
+		if (db.equipments[i].id === id) {
 			const dbEquipment = db.equipments[i];
 			db.equipments[i] = {
 				...dbEquipment,
-				name: equipment.name,
-				
+				...equipment,
+				id: dbEquipment.id,
+				location: {
+					...dbEquipment.location,
+					...equipment.location,
+				},
 			}
+			return orm.saveDb(db);
 		}
 	}
 }

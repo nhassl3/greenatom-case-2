@@ -1,4 +1,4 @@
-import { IMaintenanceRequest } from '@src/models/Maintenance.model'
+import { IMaintenanceRequest, IMaintenanceRequestPatch } from '@src/models/Maintenance.model'
 import { v4 } from 'uuid'
 import orm from './MockOrm'
 
@@ -17,21 +17,24 @@ async function getAll(): Promise<IMaintenanceRequest[]> {
 async function add(request: IMaintenanceRequest): Promise<void> {
 	const db = await orm.openDb();
 	request.id = v4().toString();
+	request.createdAt = new Date().toISOString();
+	request.updatedAt = new Date().toISOString();
 	db.maintenances.push(request);
 	return orm.saveDb(db);
 }
 
-async function update(id: string, request: IMaintenanceRequest): Promise<void> {
+async function update(id: string, request: IMaintenanceRequestPatch): Promise<void> {
 	const db = await orm.openDb();
 	for (let i = 0; i < db.maintenances.length; i++) {
 		if (db.maintenances[i].id === id) {
 			const dbRequest = db.maintenances[i];
 			db.maintenances[i] = {
 				...dbRequest,
-				title: request.title,
-				description: request.description,
-				priority: request.priority,
-				plannedAt: request.plannedAt,
+				...request,
+				id: dbRequest.id,
+				equipmentId: dbRequest.equipmentId,
+				status: dbRequest.status,
+				createdAt: dbRequest.createdAt,
 				updatedAt: new Date().toISOString(),
 			};
 			return orm.saveDb(db);

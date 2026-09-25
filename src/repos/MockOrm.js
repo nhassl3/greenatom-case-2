@@ -46,11 +46,11 @@ const DATABASE_FILE_PATH = __dirname +
         : '/database.json');
 async function openDb() {
     const db = await jsonfile_1.default.readFile(DATABASE_FILE_PATH);
-    if (!('users' in db) || !('maintenance' in db) || !('equipment' in db)) {
+    if (!('users' in db) || !('maintenances' in db) || !('equipments' in db)) {
         return tspo_1.default.addEntries(db, [
             ['users', []],
-            ['equipment', []],
-            ['maintenance', []],
+            ['equipments', []],
+            ['maintenances', []],
         ]);
     }
     return db;

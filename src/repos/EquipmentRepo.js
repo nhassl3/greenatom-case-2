@@ -28,12 +28,18 @@ async function add(equipment) {
 async function updateOne(id, equipment) {
     const db = await MockOrm_1.default.openDb();
     for (let i = 0; i < db.equipments.length; i++) {
-        if (db.equipments[i].id === equipment.id) {
+        if (db.equipments[i].id === id) {
             const dbEquipment = db.equipments[i];
             db.equipments[i] = {
                 ...dbEquipment,
-                name: equipment.name,
+                ...equipment,
+                id: dbEquipment.id,
+                location: {
+                    ...dbEquipment.location,
+                    ...equipment.location,
+                },
             };
+            return MockOrm_1.default.saveDb(db);
         }
     }
 }

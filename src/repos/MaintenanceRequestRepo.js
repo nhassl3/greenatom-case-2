@@ -17,6 +17,8 @@ async function getAll() {
 async function add(request) {
     const db = await MockOrm_1.default.openDb();
     request.id = (0, uuid_1.v4)().toString();
+    request.createdAt = new Date().toISOString();
+    request.updatedAt = new Date().toISOString();
     db.maintenances.push(request);
     return MockOrm_1.default.saveDb(db);
 }
@@ -27,10 +29,11 @@ async function update(id, request) {
             const dbRequest = db.maintenances[i];
             db.maintenances[i] = {
                 ...dbRequest,
-                title: request.title,
-                description: request.description,
-                priority: request.priority,
-                plannedAt: request.plannedAt,
+                ...request,
+                id: dbRequest.id,
+                equipmentId: dbRequest.equipmentId,
+                status: dbRequest.status,
+                createdAt: dbRequest.createdAt,
                 updatedAt: new Date().toISOString(),
             };
             return MockOrm_1.default.saveDb(db);

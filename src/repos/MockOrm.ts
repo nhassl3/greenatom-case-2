@@ -36,11 +36,11 @@ type Database = {
  */
 async function openDb(): Promise<Database> {
   const db = await (jsonfile.readFile(DATABASE_FILE_PATH) as Promise<Database>);
-  if (!('users' in db) || !('maintenance' in db) || !('equipment' in db)) {
+  if (!('users' in db) || !('maintenances' in db) || !('equipments' in db)) {
     return tspo.addEntries(db, [
       ['users', []],
-      ['equipment', []],
-      ['maintenance', []],
+      ['equipments', []],
+      ['maintenances', []],
     ]);
   }
   return db;
