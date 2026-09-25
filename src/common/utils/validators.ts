@@ -1,59 +1,47 @@
-import { isDate, isNonEmptyString } from 'jet-validators'
+import { isNumber, isString } from 'jet-validators'
 import { transform } from 'jet-validators/utils'
 import { validate as uuidValidate } from 'uuid'
 
-// Constants
+export const EQUIPMENT_TYPES = ['turbine', 'inverter', 'sensor', 'substation'] as const;
+export const EQUIPMENT_STATUSES = ['operational', 'maintenance', 'fault', 'decommissioned'] as const;
+export const REQUEST_STATUSES = ['new', 'in_progress', 'done', 'rejected'] as const;
+export const REQUEST_PRIORITIES = ['low', 'medium', 'high', 'critical'] as const;
+export const OPEN_REQUEST_STATUSES = ['new', 'in_progress'] as const;
 
-const equipmentTypes = ['turbine', 'inverter', 'sensor', 'substation'] as const;
+export const oneOf = <T extends readonly string[]>(values: T) =>
+  (v: unknown): v is T[number] => typeof v === 'string' && values.includes(v);
 
-const equipmentStatuses = ['operational', 'maintenance', 'fault', 'decommissioned'] as const;
+export const stringLength = (min: number, max: number) =>
+  transform(
+    (v) => (typeof v === 'string' ? v.trim() : v),
+    (v): v is string => isString(v) && v.length >= min && v.length <= max,
+  );
 
-const maintenanceStatuses = ['new', 'in_progress', 'done', 'rejected'] as const;
+export const numberInRange = (min: number, max: number) =>
+  (v: unknown): v is number => isNumber(v) && Number.isFinite(v) && v >= min && v <= max;
 
-const maintenancePriority = ['low', 'medium', 'high', 'critical'] as const;
+export const isUuid = (v: unknown): v is string => typeof v === 'string' && uuidValidate(v);
 
-type EquipmentType = typeof equipmentTypes[number];
-
-type EquipmentStatus = typeof equipmentStatuses[number];
-
-type MaintenanceStatus = typeof maintenanceStatuses[number];
-
-type MaintenancePriority = typeof maintenancePriority[number];
-
-/******************************************************************************
-                                Functions
-******************************************************************************/
-
-/**
- * Convert to date object then check is a validate date.
- */
-export const transformIsDate = transform(
-  (arg) => new Date(arg as string),
-  (arg) => isDate(arg),
+const ISO_RE = /^\d{4}-\d{2}-\d{2}(T[\d:.]+(Z|[+-]\d{2}:\d{2})?)?$/;
+export const isoDate = transform(
+  (v) => (typeof v === 'string' && ISO_RE.test(v) ? new Date(v) : v),
+  (v): v is Date => v instanceof Date && !Number.isNaN(v.getTime()),
 );
 
-export function isEquipmentType(value: unknown): value is EquipmentType {
-  return equipmentTypes.includes(value as EquipmentType);
-}
-
-export function isEquipmentStatus(value: unknown): value is EquipmentStatus {
-  return equipmentStatuses.includes(value as EquipmentStatus);
-}
-
-export const transformIsDateNotInFuture = transform(
-  (arg) => new Date(arg as string),
-  (arg): arg is Date => isDate(arg) && arg <= new Date(),
+export const isoDateNotInFuture = transform(
+  (v) => (typeof v === 'string' && ISO_RE.test(v) ? new Date(v) : v),
+  (v): v is Date => v instanceof Date && !Number.isNaN(v.getTime()) && v <= new Date(),
 );
 
-export function isMaintenanceStatus(value: unknown): value is MaintenanceStatus {
-  return maintenanceStatuses.includes(value as MaintenanceStatus);
-}
+export const optional = <T>(fn: (v: unknown) => v is T) =>
+  (v: unknown): v is T | undefined => v === undefined || fn(v);
 
-export function isMaintenancePriority(value: unknown): value is MaintenancePriority {
-  return maintenancePriority.includes(value as MaintenancePriority);
-}
-
-export const isValidUUID = transform(
-  (arg) => arg as string,
-  (arg): arg is string => isNonEmptyString(arg) && uuidValidate(arg),
+export const queryInt = (min: number, max: number) =>
+  transform(
+    (v) => (v === undefined ? undefined : Number(v)),
+    (v): v is number | undefined => v === undefined || (Number.isInteger(v) && (v as number) >= min && (v as number) <= max),
 );
+
+export const sortParam = (fields: readonly string[]) =>
+  (v: unknown): v is string | undefined =>
+    v === undefined || (typeof v === 'string' && fields.includes(v.replace(/^-/, '')));
