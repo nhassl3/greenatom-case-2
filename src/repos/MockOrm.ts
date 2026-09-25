@@ -4,7 +4,6 @@ import tspo from 'tspo'
 import EnvVars, { NodeEnvs } from '@src/common/constants/env'
 import { IEquipment } from '@src/models/Equipment.model'
 import { IMaintenanceRequest } from '@src/models/Maintenance.model'
-import { IUser } from '@src/models/User.model'
 
 /******************************************************************************
                                 Constants
@@ -22,7 +21,6 @@ const DATABASE_FILE_PATH =
 ******************************************************************************/
 
 type Database = {
-  users: IUser[];
   equipments: IEquipment[];
   maintenances: IMaintenanceRequest[];
 };
@@ -36,9 +34,8 @@ type Database = {
  */
 async function openDb(): Promise<Database> {
   const db = await (jsonfile.readFile(DATABASE_FILE_PATH) as Promise<Database>);
-  if (!('users' in db) || !('maintenances' in db) || !('equipments' in db)) {
+  if (!('maintenances' in db) || !('equipments' in db)) {
     return tspo.addEntries(db, [
-      ['users', []],
       ['equipments', []],
       ['maintenances', []],
     ]);

@@ -1,24 +1,15 @@
-import logger from 'jet-logger'
-
-import server from './app'
+ import logger from 'jet-logger'
+import app from './app'
 import EnvVars from './common/constants/env'
 
-/******************************************************************************
-                                Constants
-******************************************************************************/
+ const server = app.listen(EnvVars.Port, (err) => {
+   if (err) { logger.err(err.message); process.exit(1); }
+   logger.info(`Express server started on port: ${EnvVars.Port} (${EnvVars.NodeEnv})`);
+ });
 
-const SERVER_START_MESSAGE =
-  'Express server started on port: ' + EnvVars.Port.toString();
+ process.on('unhandledRejection', (reason) => logger.err(`unhandledRejection: ${String(reason)}`));
+ process.on('uncaughtException', (err) => { logger.err(err, true); process.exit(1); });
 
-/******************************************************************************
-                                  Run
-******************************************************************************/
-
-// Start the server
-server.listen(EnvVars.Port, (err) => {
-  if (!!err) {
-    logger.err(err.message);
-  } else {
-    logger.info(SERVER_START_MESSAGE);
-  }
-});
+ const shutdown = () => server.close(() => process.exit(0));
+ process.on('SIGTERM', shutdown);
+ process.on('SIGINT', shutdown);

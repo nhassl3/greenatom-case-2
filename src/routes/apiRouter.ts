@@ -2,9 +2,9 @@ import { Router } from 'express'
 
 import Paths from '@src/common/constants/Paths'
 
-import EquipmentRoutes from '@src/controllers/EquipmentRoutes'
-import HealthRoutes from '@src/controllers/HelathRoutes'
-import MaintenanceRoutes from '@src/controllers/MaintenanceRequestsRoutes'
+import EquipmentRoutes from '@src/controllers/EquipmentController'
+import HealthRoutes from '@src/controllers/HelathController'
+import MaintenanceRoutes from '@src/controllers/MaintenanceRequestsController'
 
 /******************************************************************************
                                 Setup
