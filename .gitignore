@@ -2,3 +2,6 @@
 dist/
 **/**/*.log
 tsconfig.tsbuildinfo
+config/.env.development
+config/.env.production
+config/.env.test
