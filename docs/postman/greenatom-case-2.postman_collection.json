@@ -1,0 +1,1189 @@
+{
+	"info": {
+		"_postman_id": "fd30b322-90c6-44db-88ad-1f2b37ca7dd8",
+		"name": "greenatom-case-2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21235873"
+	},
+	"item": [
+		{
+			"name": "GetAllEquipments",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/equipment",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"equipment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/health",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllRequests",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/requests",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetEquipmentById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/equipment/{{equipmentId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"equipment",
+						"{{equipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetRequestById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/requests/{{requestId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"requests",
+						"{{requestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetRequestsByEquipment",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/equipment/{{equipmentId}}/requests",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"equipment",
+						"{{equipmentId}}",
+						"requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateEquipment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"equipment\": {\n        \"name\": \"Turbine Generator BA1\",\n        \"type\": \"turbine\",\n        \"serialNumber\": \"TRB-BA1-0011\",\n        \"location\": { \"lat\": 55, \"lon\": 31 },\n        \"status\": \"operational\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/equipment",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"equipment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateNewRequest",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"maintenance\": {\n    \"equipmentId\": \"4666565f-1fc7-4304-8a8a-87b9bfdd57aa\",\n    \"title\": \"Плановый осмотр турбины\",\n    \"description\": \"Проверка подшипников и вибрации после установки.\",\n    \"priority\": \"medium\",\n    \"status\": \"new\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/requests",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateRequestStatus",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"in_progress\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/requests/{{requestId}}/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"requests",
+						"{{requestId}}",
+						"status"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "UpdateStatus",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"in_progress\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/requests/{{requestId}}/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"requests",
+								"{{requestId}}",
+								"status"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:42:51 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "FailedToUpdateStatus",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"aa\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/requests/{{requestId}}/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"requests",
+								"{{requestId}}",
+								"status"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "224"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"e0-QxxHE8V37B2f6GbPHwqUunbPx8Y\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:43:03 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"{\\\"message\\\":\\\"The parseObj() function discovered one or more errors.\\\",\\\"errors\\\":[{\\\"info\\\":\\\"Validator function returned false.\\\",\\\"functionName\\\":\\\"isMaintenanceStatus\\\",\\\"value\\\":\\\"aa\\\",\\\"key\\\":\\\"status\\\"}]}\"\n}"
+				}
+			]
+		},
+		{
+			"name": "UpdateEquipment",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"equipment\": { \"name\": \"Turbine Generator A1\" } }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/equipment/{{equipmentId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"equipment",
+						"{{equipmentId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ChangeStatus",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"equipment\": { \"status\": \"maintenance\" } }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/equipment/{{equipmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"equipment",
+								"{{equipmentId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:36:14 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "ChangeLocation",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"equipment\": { \"location\": {\"lon\": 40} } }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/equipment/{{equipmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"equipment",
+								"{{equipmentId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:41:12 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "ChangeName",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"equipment\": { \"name\": \"Turbine Generator A2\" } }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/equipment/{{equipmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"equipment",
+								"{{equipmentId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:41:45 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "EmptyNameParameter",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"equipment\": { \"name\": \"\" } }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/equipment/{{equipmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"equipment",
+								"{{equipmentId}}"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "232"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"e8-u5ytR1qGPWPAQvTO79xA+/l6jIs\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:42:10 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"{\\\"message\\\":\\\"The parseObj() function discovered one or more errors.\\\",\\\"errors\\\":[{\\\"info\\\":\\\"Validator function returned false.\\\",\\\"functionName\\\":\\\"<anonymous>\\\",\\\"value\\\":\\\"\\\",\\\"keyPath\\\":[\\\"equipment\\\",\\\"name\\\"]}]}\"\n}"
+				}
+			]
+		},
+		{
+			"name": "UpdateRequest",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"maintenance\": {\n    \"title\": \"\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/requests/{{requestId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"requests",
+						"{{requestId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "UpdateRequestWithoutStatus",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"maintenance\": {\n    \"_\": \"статус не обновится, потому что не содержится в типе для обновления Requests\",\n    \"status\": \"in_progress\",\n    \"description\": \"Обновлено описание заявки после осмотра.\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/requests/{{requestId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"requests",
+								"{{requestId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:47:43 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "UpdateRequestWithEmptyDescription",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"maintenance\": {\n    \"status\": \"in_progress\",\n    \"description\": \"\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/requests/{{requestId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"requests",
+								"{{requestId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:49:19 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "UpdatedTitle",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"maintenance\": {\n    \"title\": \"Плановая инспекция\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/requests/{{requestId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"requests",
+								"{{requestId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:50:02 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "FailedToUpdateRequestWithEmptyTitle",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"maintenance\": {\n    \"_\": \"title пустой, поэтому метод не завершится успешно, а вернет 400 bad request\",\n    \"title\": \"\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/requests/{{requestId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"requests",
+								"{{requestId}}"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "235"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"eb-J4msjNoor+olBaeDlVf/a1Yqe2Q\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:50:29 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"{\\\"message\\\":\\\"The parseObj() function discovered one or more errors.\\\",\\\"errors\\\":[{\\\"info\\\":\\\"Validator function returned false.\\\",\\\"functionName\\\":\\\"<anonymous>\\\",\\\"value\\\":\\\"\\\",\\\"keyPath\\\":[\\\"maintenance\\\",\\\"title\\\"]}]}\"\n}"
+				}
+			]
+		},
+		{
+			"name": "DeleteRequest",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/requests/{{requestId2}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"requests",
+						"{{requestId2}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "DeleteRequest",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/requests/{{requestId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"requests",
+								"{{requestId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:54:22 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "ResendWithSameId",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/requests/{{requestId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"requests",
+								"{{requestId}}"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "29"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1d-P5l7jokQoptb6vUGaJB1Jdokrdc\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:54:52 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Request not found\"\n}"
+				},
+				{
+					"name": "WrongId",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/requests/{{requestId2}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"requests",
+								"{{requestId2}}"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "29"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1d-P5l7jokQoptb6vUGaJB1Jdokrdc\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:56:15 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Request not found\"\n}"
+				}
+			]
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/equipment/{{equipmentId2}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"equipment",
+						"{{equipmentId2}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "DeletedEquipment",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/equipment/{{equipmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"equipment",
+								"{{equipmentId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:57:06 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "ResendWithSameId",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/equipment/{{equipmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"equipment",
+								"{{equipmentId}}"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "31"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1f-0gYTayAZoO8QGc+UBK//7XE6KVQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:57:18 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Equipment not found\"\n}"
+				},
+				{
+					"name": "WrongId",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/equipment/{{equipmentId2}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"equipment",
+								"{{equipmentId2}}"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "31"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1f-0gYTayAZoO8QGc+UBK//7XE6KVQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 23 Sep 2026 17:58:06 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Equipment not found\"\n}"
+				}
+			]
+		},
+		{
+			"name": "GetEquipmentWeather",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/equipment/{{equipmentId}}/weather",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"equipment",
+						"{{equipmentId}}",
+						"weather"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "equipmentId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "requestId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "requestId2",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "equipmentId2",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
