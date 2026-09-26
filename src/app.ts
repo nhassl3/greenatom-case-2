@@ -1,12 +1,9 @@
 import type { Request, Response } from 'express'
 import express from 'express'
 import helmet from 'helmet'
-import logger from 'jet-logger'
-import morgan from 'morgan'
 import path from 'path'
 
 import Paths from '@src/common/constants/Paths'
-import { RouteError } from '@src/common/utils/route-errors'
 import BaseRouter from '@src/routes/apiRouter'
 
 import cors from 'cors'
@@ -17,7 +14,6 @@ import { notFound } from './middlewares/notFound'
 import { apiLimiter } from './middlewares/rateLimit'
 import { requestId } from './middlewares/requestID'
 import { requestLogger } from './middlewares/requestLogger'
-import { validate } from './middlewares/validate'
 
 /******************************************************************************
                                 Setup
