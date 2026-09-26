@@ -20,6 +20,7 @@ import { requestLogger } from './middlewares/requestLogger'
 ******************************************************************************/
 
 const app = express();
+app.set('trust proxy', 1); // docker
 
 // **** Middleware **** //
 
