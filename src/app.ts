@@ -1,4 +1,5 @@
-import express, { NextFunction, Request, Response } from 'express'
+import type { Request, Response } from 'express'
+import express from 'express'
 import helmet from 'helmet'
 import logger from 'jet-logger'
 import morgan from 'morgan'
