@@ -3,7 +3,7 @@ import TestAgent from 'supertest/lib/agent';
 import { beforeAll } from 'vitest';
 
 import MockOrm from '@src/repos/MockOrm';
-import app from '@src/server';
+import app from '@src/app';
 
 /******************************************************************************
                                     Run
