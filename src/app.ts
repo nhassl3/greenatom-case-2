@@ -31,7 +31,6 @@ app.use(helmet());
 app.use(cors(corsOptions));
 app.use(Paths._, apiLimiter);
 app.use(notFound);
-app.use(validate);
 app.use(errorHandler);
 app.use(express.json({limit: EnvVars.BodyLimit}));
 app.use(express.urlencoded({ extended: true }));
