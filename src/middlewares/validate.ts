@@ -14,7 +14,7 @@ export function validate(schemas: Partial<Record<Part, ValidationSchema>>) {
 		const validated: Partial<Record<Part, unknown>> = {};
 
 		for (const [part, schema] of parts) {
-				const input = req[part] ?? {};
+				const input: unknown = req[part] ?? {};
 				const result = schema.parse(input, (errors) => {
 					if (part === 'body') bodyFailed = true;
 					for (const e of errors) {

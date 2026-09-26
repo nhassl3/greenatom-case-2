@@ -8,8 +8,8 @@ export class ConflictError extends AppError {
 	constructor(message: string, code='CONFLICT') { super(409, code, message )};
 }
 
-export class AlreadyExists extends ConflictError {
-	constructor(message: string = "Ресурс уже находится в системе") {super(message)}; // CODE = ALREADY_EXISTS ???
+export class AlreadyExistsError extends ConflictError {
+	constructor(message: string = "Ресурс уже находится в системе") {super(message, "ALREADY_EXISTS")}; // CODE = ALREADY_EXISTS | CONFLICT ???
 }
 
 export class ValidationError extends AppError {

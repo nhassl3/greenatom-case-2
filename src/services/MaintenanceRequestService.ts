@@ -1,5 +1,4 @@
-import HttpStatusCodes from '@src/common/constants/HttpStatusCodes'
-import { RouteError } from '@src/common/utils/route-errors'
+import { AlreadyExistsError, ConflictError, NotFoundError } from '@src/common/errors'
 import { IMaintenanceRequest, IMaintenanceRequestPatch } from '@src/models/Maintenance.model'
 import MaintenanceRequestRepo from '@src/repos/MaintenanceRequestRepo'
 
@@ -19,7 +18,6 @@ const AllowedStatusTransitions: Record<string, readonly string[]> = {
 
 // Functions
 
-const generateNotFoundError = (): RouteError => new RouteError(HttpStatusCodes.NOT_FOUND, Errors.REQUEST_NOT_FOUND, "NOT_FOUND")
 
 function getAll(): Promise<IMaintenanceRequest[]> {
 	return MaintenanceRequestRepo.getAll();
@@ -29,36 +27,36 @@ async function addOne(request: IMaintenanceRequest): Promise<void> {
 	try {
 		await MaintenanceRequestRepo.add(request)
 	} catch (err) {
-		if (err == "already_exists") throw new RouteError(HttpStatusCodes.CONFLICT, Errors.REQUEST_ALREADY_EXISTS, "ALREADY_EXISTS");
+		if (err == "already_exists") throw new AlreadyExistsError(Errors.REQUEST_ALREADY_EXISTS);
 	}
 	return;
 }
 
 async function getById(id: string): Promise<IMaintenanceRequest | null> {
 	const persists = await MaintenanceRequestRepo.persists(id);
-	if (!persists) throw generateNotFoundError();
+	if (!persists) throw new NotFoundError(Errors.REQUEST_NOT_FOUND);
 	return MaintenanceRequestRepo.getOne(id);
 }
 
 async function patchOne(id: string, request: IMaintenanceRequestPatch): Promise<void> {
 	const persists = await MaintenanceRequestRepo.persists(id);
-	if (!persists) throw generateNotFoundError();
+	if (!persists) throw new NotFoundError(Errors.REQUEST_NOT_FOUND);
 	return MaintenanceRequestRepo.update(id, request);
 }
 
 async function patchStatus(id: string, status: string): Promise<void> {
 	const request = await MaintenanceRequestRepo.getOne(id);
-	if (!request) throw generateNotFoundError();
+	if (!request) throw new NotFoundError(Errors.REQUEST_NOT_FOUND);
 	const allowed = AllowedStatusTransitions[request.status] ?? [];
 	if (!allowed.includes(status)) {
-		throw new RouteError(HttpStatusCodes.CONFLICT, Errors.UNACCEPTABLE_TRANSITION, "CONFLICT");
+		throw new ConflictError(Errors.UNACCEPTABLE_TRANSITION);
 	}
 	return MaintenanceRequestRepo.updateStatus(id, status);
 }
 
 async function deleteOne(id: string): Promise<void> {
 	const persists = await MaintenanceRequestRepo.persists(id);
-	if (!persists) throw generateNotFoundError();
+	if (!persists) throw new NotFoundError(Errors.REQUEST_NOT_FOUND);
 	return MaintenanceRequestRepo.delete(id);
 }
 

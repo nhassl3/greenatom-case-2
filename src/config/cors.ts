@@ -1,6 +1,5 @@
 import { CorsOrigins } from '@src/common/constants/env'
-import { CrossEnvOptions } from 'cross-env'
-import { CorsOptions } from 'cors';
+import { CorsOptions } from 'cors'
 
 export const corsOptions: CorsOptions = {
 	origin(origin, cb) {

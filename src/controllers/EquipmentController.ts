@@ -1,4 +1,4 @@
-import Equipment, { IEquipment, IEquipmentPatch } from '@src/models/Equipment.model'
+import { IEquipment, IEquipmentPatch } from '@src/models/Equipment.model'
 import EquipmentService from '@src/services/EquipmentService'
 import { getValidated, Req, Res } from './common/express-types'
 import { created, ok, okE } from './common/respond'
@@ -25,7 +25,7 @@ async function get(_: Req, res: Res) {
  */
 async function add(req: Req, res: Res) {
 	const { body } = getValidated<unknown, unknown, IEquipment>(res);
-	await EquipmentService.addOne(Equipment.new(body));
+	await EquipmentService.addOne(body);
 	created(res, req.originalUrl, {"status": "created"});
 }
 

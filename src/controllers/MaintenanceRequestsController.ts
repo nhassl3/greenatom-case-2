@@ -1,5 +1,5 @@
 import HttpStatusCodes from '@src/common/constants/HttpStatusCodes'
-import Maintenance, { IMaintenanceRequest, IMaintenanceRequestPatch } from '@src/models/Maintenance.model'
+import { IMaintenanceRequest, IMaintenanceRequestPatch } from '@src/models/Maintenance.model'
 import RequestService from '@src/services/MaintenanceRequestService'
 import { getValidated, type Req, type Res } from './common/express-types'
 import { created, ok, okE } from './common/respond'
@@ -26,7 +26,7 @@ async function get(_: Req, res: Res) {
  */
 async function add(req: Req, res: Res) {
 	const {body} = getValidated<unknown, unknown, IMaintenanceRequest>(res);
-	await RequestService.addOne(Maintenance.new(body));
+	await RequestService.addOne(body);
 	created(res, req.originalUrl, {"status": "created"});
 }
 

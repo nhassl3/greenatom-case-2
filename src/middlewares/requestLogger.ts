@@ -1,4 +1,4 @@
-import logger from '@src/common/logger/logger'
+import logger from '@src/common/utils/logger'
 import type { Request, Response } from 'express'
 import { NextFunction } from 'express'
 
