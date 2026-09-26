@@ -35,16 +35,6 @@ app.use(errorHandler);
 app.use(express.json({limit: EnvVars.BodyLimit}));
 app.use(express.urlencoded({ extended: true }));
 
-// Show routes called in console during development
-if (EnvVars.NodeEnv === NodeEnvs.DEV) {
-  app.use(morgan('dev'));
-}
-
-// Security
-if (EnvVars.NodeEnv === NodeEnvs.PRODUCTION) {
-  app.use(helmet());
-}
-
 // Add APIs, must be after middleware
 app.use(Paths._, BaseRouter);
 
