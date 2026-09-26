@@ -8,7 +8,15 @@ import Paths from '@src/common/constants/Paths'
 import { RouteError } from '@src/common/utils/route-errors'
 import BaseRouter from '@src/routes/apiRouter'
 
-import EnvVars, { NodeEnvs } from './common/constants/env'
+import cors from 'cors'
+import EnvVars from './common/constants/env'
+import { corsOptions } from './config/cors'
+import { errorHandler } from './middlewares/errorHandler'
+import { notFound } from './middlewares/notFound'
+import { apiLimiter } from './middlewares/rateLimit'
+import { requestId } from './middlewares/requestID'
+import { requestLogger } from './middlewares/requestLogger'
+import { validate } from './middlewares/validate'
 
 /******************************************************************************
                                 Setup
@@ -19,7 +27,15 @@ const app = express();
 // **** Middleware **** //
 
 // Basic middleware
-app.use(express.json());
+app.use(requestId);
+app.use(requestLogger);
+app.use(helmet());
+app.use(cors(corsOptions));
+app.use(Paths._, apiLimiter);
+app.use(notFound);
+app.use(validate);
+app.use(errorHandler);
+app.use(express.json({limit: EnvVars.BodyLimit}));
 app.use(express.urlencoded({ extended: true }));
 
 // Show routes called in console during development
