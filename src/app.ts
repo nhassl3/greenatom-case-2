@@ -38,18 +38,6 @@ app.use(express.urlencoded({ extended: true }));
 // Add APIs, must be after middleware
 app.use(Paths._, BaseRouter);
 
-// Add error handler
-app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
-  if (EnvVars.NodeEnv !== NodeEnvs.TEST.valueOf()) {
-    logger.err(err, true);
-  }
-  if (err instanceof RouteError) {
-    res.status(err.status).json(err.toResponseBody());
-    return;
-  }
-  return next(err);
-});
-
 // **** FrontEnd Content **** //
 
 // Set views directory (html)
