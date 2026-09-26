@@ -1,21 +1,8 @@
 import HttpStatusCodes from '@src/common/constants/HttpStatusCodes'
-import { isMaintenanceStatus } from '@src/common/utils/validators'
-import Maintenance from '@src/models/Maintenance.model'
+import Maintenance, { IMaintenanceRequest, IMaintenanceRequestPatch } from '@src/models/Maintenance.model'
 import RequestService from '@src/services/MaintenanceRequestService'
-import { isString } from 'jet-validators'
-import { transform } from 'jet-validators/utils'
-import type { Req, Res } from './common/express-types'
-import parseReq from './common/parseReq'
-
-// Constants
-
-const reqValidators = {
-	add: parseReq({ maintenance: Maintenance.isNew }),
-	getOne: parseReq({ id: transform(String, isString)}),
-	patch: parseReq({ maintenance: Maintenance.isPartial}),
-	delete: parseReq({ id: transform(String, isString)}),
-	patchStatus: parseReq({ status: isMaintenanceStatus}),
-}
+import { getValidated, type Req, type Res } from './common/express-types'
+import { created, ok, okE } from './common/respond'
 
 // Functions
 
@@ -38,9 +25,9 @@ async function get(_: Req, res: Res) {
  * @route POST /api/requests
  */
 async function add(req: Req, res: Res) {
-	const { maintenance } = reqValidators.add(req.body);
-	await RequestService.addOne(Maintenance.new(maintenance));
-	res.status(HttpStatusCodes.CREATED).end();
+	const {body} = getValidated<unknown, unknown, IMaintenanceRequest>(res);
+	await RequestService.addOne(Maintenance.new(body));
+	created(res, req.originalUrl, {"status": "created"});
 }
 
 /**
@@ -49,10 +36,10 @@ async function add(req: Req, res: Res) {
  * @param res response
  * @route GET /api/requests/:id
  */
-async function getById(req: Req, res: Res) {
-	const { id } = reqValidators.getOne(req.params);
-	const request = await RequestService.getById(id);
-	res.status(HttpStatusCodes.OK).json({request});
+async function getById(_: Req, res: Res) {
+	const { params } = getValidated<{id: string}, unknown, unknown>(res);
+	const request = await RequestService.getById(params.id);
+	ok(res, request);
 }
 
 /**
@@ -61,11 +48,10 @@ async function getById(req: Req, res: Res) {
  * @param res response
  * @route PATCH /api/reqeusts/:id
  */
-async function patch(req: Req, res: Res) {
-	const { id } = reqValidators.getOne(req.params);
-	const { maintenance } = reqValidators.patch(req.body);
-	await RequestService.patchOne(id, maintenance)
-	res.status(HttpStatusCodes.OK).end();
+async function patch(_: Req, res: Res) {
+	const { params, body } = getValidated<{id: string}, unknown, IMaintenanceRequestPatch>(res);
+	await RequestService.patchOne(params.id, body)
+	okE(res);
 }
 
 /**
@@ -74,11 +60,10 @@ async function patch(req: Req, res: Res) {
  * @param res response
  * @route PATCH /api/requests/:id/status
  */
-async function patchStatus(req: Req, res: Res) {
-	const { id } = reqValidators.getOne(req.params);
-	const { status } = reqValidators.patchStatus(req.body);
-	await RequestService.patchStatus(id, status);
-	res.status(HttpStatusCodes.OK).end();
+async function patchStatus(_: Req, res: Res) {
+	const { params, body } = getValidated<{id: string}, unknown, {status: string}>(res);
+	await RequestService.patchStatus(params.id, body.status);
+	okE(res);
 }
 
 /**
@@ -87,10 +72,10 @@ async function patchStatus(req: Req, res: Res) {
  * @param res response
  * @route DELETE /api/requests/:id
  */
-async function delete_(req: Req, res: Res) {
-	const { id } = reqValidators.delete(req.params);
-	await RequestService.deleteOne(id);
-	res.status(HttpStatusCodes.OK).end();
+async function delete_(_: Req, res: Res) {
+	const { params } = getValidated<{id: string}, unknown, unknown>(res);
+	await RequestService.deleteOne(params.id);
+	okE(res);
 }
 
 export default {

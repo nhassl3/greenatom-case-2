@@ -1,21 +1,9 @@
-import HttpStatusCodes from '@src/common/constants/HttpStatusCodes'
-import Equipment from '@src/models/Equipment.model'
+import Equipment, { IEquipment, IEquipmentPatch } from '@src/models/Equipment.model'
 import EquipmentService from '@src/services/EquipmentService'
-import { isString } from 'jet-validators'
-import { transform } from 'jet-validators/utils'
-import { Req, Res } from './common/express-types'
-import parseReq from './common/parseReq'
+import { getValidated, Req, Res } from './common/express-types'
+import { created, ok, okE } from './common/respond'
 
-// Constants
-
-const reqValidators = {
-	getOne: parseReq({ id: transform(String, isString) }),
-	add: parseReq({ equipment: Equipment.isNew }),
-	patch: parseReq({ equipment: Equipment.isPartial }),
-	delete: parseReq({ id: transform(String, isString) }),
-} as const;
-
-// functions
+// Functions
 
 /**
  * Список оборудования: фильтры,
@@ -27,7 +15,7 @@ const reqValidators = {
  */
 async function get(_: Req, res: Res) {
 	const equipements = await EquipmentService.getAll();
-	res.status(HttpStatusCodes.OK).json({ equipements });
+	ok(res, equipements);
 }
 
 /**
@@ -36,9 +24,9 @@ async function get(_: Req, res: Res) {
  * @route POST /api/equipment
  */
 async function add(req: Req, res: Res) {
-	const { equipment } = reqValidators.add(req.body);
-	await EquipmentService.addOne(Equipment.new(equipment));
-	res.status(HttpStatusCodes.CREATED).end();
+	const { body } = getValidated<unknown, unknown, IEquipment>(res);
+	await EquipmentService.addOne(Equipment.new(body));
+	created(res, req.originalUrl, {"status": "created"});
 }
 
 /**
@@ -46,10 +34,10 @@ async function add(req: Req, res: Res) {
  *
  * @route GET /api/equipment/:id
  */
-async function getById(req: Req, res: Res) {
-  const { id } = reqValidators.getOne(req.params);
-  const equipment = await EquipmentService.getOne(id);
-  res.status(HttpStatusCodes.OK).json({ equipment });
+async function getById(_: Req, res: Res) {
+  const { params } = getValidated<{id: string}, unknown, unknown>(res);
+  const equipment = await EquipmentService.getOne(params.id);
+  ok(res, equipment);
 }
 
 /**
@@ -57,11 +45,10 @@ async function getById(req: Req, res: Res) {
  *
  * @route PATCH /api/equipment/:id
  */
-async function patch(req: Req, res: Res) {
-  const { id } = reqValidators.getOne(req.params);
-	const { equipment } = reqValidators.patch(req.body);
-  await EquipmentService.updateOne(id, equipment);
-  res.status(HttpStatusCodes.OK).end();
+async function patch(_: Req, res: Res) {
+	const { params, body } = getValidated<{id: string}, unknown, IEquipmentPatch>(res);
+  await EquipmentService.updateOne(params.id, body);
+  okE(res);
 }
 
 /**
@@ -70,10 +57,10 @@ async function patch(req: Req, res: Res) {
  *
  * @route DELETE /api/equipment/:id
  */
-async function delete_(req: Req, res: Res) {
-  const { id } = reqValidators.delete(req.params);
-  await EquipmentService.deleteOne(id);
-  res.status(HttpStatusCodes.OK).end();
+async function delete_(_: Req, res: Res) {
+	const { params } = getValidated<{id: string}, unknown, unknown>(res);
+  await EquipmentService.deleteOne(params.id);
+  okE(res);
 }
 
 /**
@@ -83,10 +70,10 @@ async function delete_(req: Req, res: Res) {
  * @param res response
  * @route /api/equipment/:id/requests
  */
-async function getRequest(req: Req, res: Res) {
-	const { id } = reqValidators.getOne(req.params);
-	const equipmentRequests = await EquipmentService.getEquipmentRequests(id);
-	res.status(HttpStatusCodes.OK).json({ equipmentRequests});
+async function getRequest(_: Req, res: Res) {
+	const { params } = getValidated<{id: string}, unknown, unknown>(res);
+	const equipmentRequests = await EquipmentService.getEquipmentRequests(params.id);
+	ok(res, equipmentRequests);
 }
 
 /**
@@ -97,9 +84,9 @@ async function getRequest(req: Req, res: Res) {
  * @route /api/equipment/:id/weather
  */
 async function getWeather(req: Req, res: Res) {
-	const { id } = reqValidators.getOne(req.params);
-	const equipmentWeather = await EquipmentService.getEquipmentWeather(id);
-	res.status(HttpStatusCodes.OK).json({ equipmentWeather });
+	const { params } = getValidated<{id: string}, unknown, unknown>(res);
+	const equipmentWeather = await EquipmentService.getEquipmentWeather(params.id);
+	ok(res, equipmentWeather);
 }
 
 // export default
