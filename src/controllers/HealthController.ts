@@ -1,5 +1,5 @@
-import HttpStatusCodes from '@src/common/constants/HttpStatusCodes'
 import { Req, Res } from './common/express-types'
+import { ok } from './common/respond'
 
 /**
  * Проверка доступности сервиса
@@ -8,7 +8,7 @@ import { Req, Res } from './common/express-types'
  * @route GET /api/health
  */
 function health(_: Req, res: Res): void {
-	res.status(HttpStatusCodes.OK).json({"status": "ok"});
+	ok(res, { status: 'ok', uptime: Math.floor(process.uptime()) });
 }
 
 export default {

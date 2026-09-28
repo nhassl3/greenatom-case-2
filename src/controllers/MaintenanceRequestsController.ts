@@ -1,88 +1,82 @@
-import HttpStatusCodes from '@src/common/constants/HttpStatusCodes'
-import { IMaintenanceRequest, IMaintenanceRequestPatch } from '@src/models/Maintenance.model'
+import Paths from '@src/common/constants/Paths'
+import { RequestListQuery } from '@src/common/utils/requests.validators'
+import { RequestCreateDto, RequestPatchDto } from '@src/models/Maintenance.model'
+import { RequestStatus } from '@src/models/common/general'
 import RequestService from '@src/services/MaintenanceRequestService'
 import { getValidated, type Req, type Res } from './common/express-types'
-import { created, ok, okE } from './common/respond'
+import * as respond from './common/respond'
 
 // Functions
 
 /**
- * Список заявок: фильтры, сортировка,
-пагинация
- * @param _ reqeuest
- * @param res response
+ * Список заявок: фильтры, сортировка, пагинация
+ *
  * @route GET /api/requests
  */
-async function get(_: Req, res: Res) {
-	const requests = await RequestService.getAll();
-	res.status(HttpStatusCodes.OK).json({ requests });
+async function list(_: Req, res: Res) {
+	const { query } = getValidated<never, RequestListQuery, never>(res);
+	const { items, meta } = await RequestService.list(query);
+	respond.list(res, items, meta);
 }
 
 /**
- * Создание карточки
- * @param req requests
- * @param res response
+ * Создание заявки
+ *
  * @route POST /api/requests
  */
-async function add(req: Req, res: Res) {
-	const {body} = getValidated<unknown, unknown, IMaintenanceRequest>(res);
-	await RequestService.addOne(body);
-	created(res, req.originalUrl, {"status": "created"});
+async function create(_: Req, res: Res) {
+	const { body } = getValidated<never, never, RequestCreateDto>(res);
+	const created = await RequestService.create(body);
+	// jet-paths не пропускает UUID (дефисы в сегменте), поэтому путь собирается вручную
+	respond.created(res, `${Paths._}${Paths.Requests._}/${created.id}`, created);
 }
 
 /**
  * Карточка заявки
- * @param req request
- * @param res response
+ *
  * @route GET /api/requests/:id
  */
 async function getById(_: Req, res: Res) {
-	const { params } = getValidated<{id: string}, unknown, unknown>(res);
-	const request = await RequestService.getById(params.id);
-	ok(res, request);
+	const { params } = getValidated<{id: string}, never, never>(res);
+	respond.ok(res, await RequestService.getById(params.id));
 }
 
 /**
  * Редактирование полей заявки
- * @param req request
- * @param res response
- * @route PATCH /api/reqeusts/:id
+ *
+ * @route PATCH /api/requests/:id
  */
 async function patch(_: Req, res: Res) {
-	const { params, body } = getValidated<{id: string}, unknown, IMaintenanceRequestPatch>(res);
-	await RequestService.patchOne(params.id, body)
-	okE(res);
+	const { params, body } = getValidated<{id: string}, never, RequestPatchDto>(res);
+	respond.ok(res, await RequestService.patch(params.id, body));
 }
 
 /**
- * Смена статуса заявки с проверкой допустимости перехода (см. в @src/models/Maintenance.model.ts)
- * @param req request
- * @param res response
+ * Смена статуса заявки с проверкой допустимости перехода (см. AllowedStatusTransitions в сервисе)
+ *
  * @route PATCH /api/requests/:id/status
  */
 async function patchStatus(_: Req, res: Res) {
-	const { params, body } = getValidated<{id: string}, unknown, {status: string}>(res);
-	await RequestService.patchStatus(params.id, body.status);
-	okE(res);
+	const { params, body } = getValidated<{id: string}, never, { status: RequestStatus }>(res);
+	respond.ok(res, await RequestService.changeStatus(params.id, body.status));
 }
 
 /**
  * Удаление заявки
- * @param req request
- * @param res response
+ *
  * @route DELETE /api/requests/:id
  */
-async function delete_(_: Req, res: Res) {
-	const { params } = getValidated<{id: string}, unknown, unknown>(res);
-	await RequestService.deleteOne(params.id);
-	okE(res);
+async function remove(_: Req, res: Res) {
+	const { params } = getValidated<{id: string}, never, never>(res);
+	await RequestService.remove(params.id);
+	respond.noContent(res);
 }
 
 export default {
-	get,
-	add,
+	list,
+	create,
 	getById,
 	patch,
 	patchStatus,
-	delete: delete_,
+	remove,
 } as const;
