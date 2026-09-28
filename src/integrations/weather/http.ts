@@ -2,7 +2,7 @@
 import EnvVars from '@src/common/constants/env'
 import { ApiError, InvalidJsonError, NetworkError, TimeoutError } from './common/errors'
 
-export async function fetchJson(baseUrl: string, params = {}) {
+export async function fetchJson(baseUrl: string, params: Record<string, number | string> = {}) {
 	const url = new URL(baseUrl);
 	for (const [key, value] of Object.entries(params)) {
 		if (value !== undefined && value !== null) {
@@ -32,7 +32,7 @@ export async function fetchJson(baseUrl: string, params = {}) {
 		if (err instanceof ApiError || err instanceof InvalidJsonError) {
 			throw err;
 		}
-		if (err.name === 'AbortError') {
+		if (err instanceof Error && err?.name === 'AbortError') {
 			throw new TimeoutError();
 		}
 		throw new NetworkError();
