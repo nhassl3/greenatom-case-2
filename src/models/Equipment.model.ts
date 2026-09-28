@@ -1,15 +1,7 @@
-import { EQUIPMENT_STATUSES, EQUIPMENT_TYPES } from '@src/common/utils/validators'
 import { v4 } from 'uuid'
+import { EquipmentStatus, EquipmentType, ILocation } from './common/general'
 
 // Types
-
-export type EquipmentType = (typeof EQUIPMENT_TYPES)[number];
-export type EquipmentStatus = (typeof EQUIPMENT_STATUSES)[number];
-
-export interface ILocation {
-	lat: number;
-	lon: number;
-}
 
 /**
  * @entity equipment

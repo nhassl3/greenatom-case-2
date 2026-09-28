@@ -1,10 +1,7 @@
-import { REQUEST_PRIORITIES, REQUEST_STATUSES } from '@src/common/utils/validators'
 import { v4 } from 'uuid'
+import { RequestPriority, RequestStatus } from './common/general'
 
 // Types
-
-export type RequestStatus = (typeof REQUEST_STATUSES)[number];
-export type RequestPriority = (typeof REQUEST_PRIORITIES)[number];
 
 /**
  * @entity maintenance_request
