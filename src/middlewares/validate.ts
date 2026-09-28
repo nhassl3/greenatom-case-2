@@ -1,6 +1,6 @@
 import { ValidationError } from '@src/common/errors'
 import { ErrorDetail } from '@src/common/errors/AppError'
-import { ValidationSchema } from '@src/common/utils/defineSchema'
+import { parseWithDetails, ValidationSchema } from '@src/common/utils/defineSchema'
 import type { Request, Response } from 'express'
 import { NextFunction } from 'express'
 
@@ -14,17 +14,15 @@ export function validate(schemas: Partial<Record<Part, ValidationSchema>>) {
 		const validated: Partial<Record<Part, unknown>> = {};
 
 		for (const [part, schema] of parts) {
-				const input: unknown = req[part] ?? {};
-				const result = schema.parse(input, (errors) => {
-					if (part === 'body') bodyFailed = true;
-					for (const e of errors) {
-						const field = e.keyPath?.join('.') ?? e.key ?? part;
-						details.push({ field, message: schema.messages[field] ?? schema.messages[e.key ?? ''] ?? "Недопустимое значение"});
-					}
-				});
-				validated[part] = result;
+			const input: unknown = req[part] ?? {};
+			const result = parseWithDetails(schema, input, part);
+			if (result.ok) {
+				validated[part] = result.value;
+			} else {
+				if (part === 'body') bodyFailed = true;
+				details.push(...result.details);
+			}
 		}
-		
 		if (details.length) return next(new ValidationError(details, bodyFailed ? 422 : 400));
 		res.locals.validated = validated;
 		next();
