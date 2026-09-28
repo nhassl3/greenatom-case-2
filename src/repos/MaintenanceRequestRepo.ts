@@ -1,83 +1,100 @@
-import { IMaintenanceRequest, IMaintenanceRequestPatch } from '@src/models/Maintenance.model'
-import { v4 } from 'uuid'
+import { IMaintenanceRequest, IMaintenanceRequestChanges } from '@src/models/Maintenance.model'
+import { inDateRange, paginate, sortBy } from './common/list-utils'
 import orm from './MockOrm'
+import { IMaintenanceRequestRepo, ListQuery, ListResult, RequestFilter } from './types'
 
-async function getOne(id: string): Promise<IMaintenanceRequest | null> {
-	return (await orm.openDb()).maintenances.find(request => request.id === id) ?? null;
-}
+// Constants
 
-async function persists(id: string): Promise<boolean> {
-	return new Set((await orm.openDb()).maintenances.map(request => request.id)).has(id);
-}
+const PRIORITY_RANK: Record<string, number> = { low: 0, medium: 1, high: 2, critical: 3 };
 
-async function getAll(): Promise<IMaintenanceRequest[]> {
-	return (await orm.openDb()).maintenances;
-}
+// Functions
 
-async function add(request: IMaintenanceRequest): Promise<void> {
+async function findMany(q: ListQuery<RequestFilter>): Promise<ListResult<IMaintenanceRequest>> {
+	const { filter: f, sort, page, limit } = q;
 	const db = await orm.openDb();
-	request.id = v4().toString();
-	request.createdAt = new Date().toISOString();
-	request.updatedAt = new Date().toISOString();
+	const filtered = db.maintenances.filter((r) =>
+		(!f.status || r.status === f.status) &&
+		(!f.priority || r.priority === f.priority) &&
+		(!f.equipmentId || r.equipmentId === f.equipmentId) &&
+		inDateRange(r.createdAt, f.createdFrom, f.createdTo) &&
+		inDateRange(r.plannedAt, f.plannedFrom, f.plannedTo),
+	);
+	return paginate(sortBy(filtered, sort, { priority: PRIORITY_RANK }), page, limit);
+}
+
+async function findById(id: string): Promise<IMaintenanceRequest | null> {
+	const db = await orm.openDb();
+	return db.maintenances.find((r) => r.id === id) ?? null;
+}
+
+async function countByEquipmentAndStatuses(equipmentId: string, statuses: readonly string[]): Promise<number> {
+	const db = await orm.openDb();
+	return db.maintenances.filter((r) => r.equipmentId === equipmentId && statuses.includes(r.status)).length;
+}
+
+async function create(request: IMaintenanceRequest): Promise<IMaintenanceRequest> {
+	const db = await orm.openDb();
 	db.maintenances.push(request);
+	await orm.saveDb(db);
+	return request;
+}
+
+async function update(id: string, patch: IMaintenanceRequestChanges): Promise<IMaintenanceRequest | null> {
+	const db = await orm.openDb();
+	const i = db.maintenances.findIndex((r) => r.id === id);
+	if (i === -1) return null;
+	const current = db.maintenances[i];
+	db.maintenances[i] = {
+		...current,
+		...patch,
+		id: current.id,
+		equipmentId: current.equipmentId,
+		createdAt: current.createdAt,
+		updatedAt: new Date().toISOString(),
+	};
+	await orm.saveDb(db);
+	return db.maintenances[i];
+}
+
+async function delete_(id: string): Promise<boolean> {
+	const db = await orm.openDb();
+	const i = db.maintenances.findIndex((r) => r.id === id);
+	if (i === -1) return false;
+	db.maintenances.splice(i, 1);
+	await orm.saveDb(db);
+	return true;
+}
+
+/**
+ * @testOnly
+ */
+async function deleteAllRequests(): Promise<void> {
+	const db = await orm.openDb();
+	db.maintenances = [];
 	return orm.saveDb(db);
 }
 
-async function update(id: string, request: IMaintenanceRequestPatch): Promise<void> {
+/**
+ * @testOnly
+ */
+async function insertMultiple(requests: IMaintenanceRequest[] | readonly IMaintenanceRequest[]): Promise<IMaintenanceRequest[]> {
 	const db = await orm.openDb();
-	for (let i = 0; i < db.maintenances.length; i++) {
-		if (db.maintenances[i].id === id) {
-			const dbRequest = db.maintenances[i];
-			db.maintenances[i] = {
-				...dbRequest,
-				...request,
-				id: dbRequest.id,
-				equipmentId: dbRequest.equipmentId,
-				status: dbRequest.status,
-				createdAt: dbRequest.createdAt,
-				updatedAt: new Date().toISOString(),
-			};
-			return orm.saveDb(db);
-		}
-	}
+	db.maintenances = [...db.maintenances, ...requests];
+	await orm.saveDb(db);
+	return [...requests];
 }
 
-async function updateStatus(id: string, status: string): Promise<void> {
-	const db = await orm.openDb();
-	for (let i = 0; i < db.maintenances.length; i++) {
-		if (db.maintenances[i].id === id) {
-			const dbRequest = db.maintenances[i];
-			db.maintenances[i] = {
-				...dbRequest,
-				status: status,
-				updatedAt: new Date().toISOString(),
-			};
-			return orm.saveDb(db);
-		}
-	}
-}
-
-async function delete_(id: string): Promise<void> {
-	const db = await orm.openDb();
-	for (let i = 0; i < db.maintenances.length; i++) {
-		if (db.maintenances[i].id === id) {
-			db.maintenances.splice(i, 1);
-			return orm.saveDb(db);
-		}
-	}
-}
-
-async function getAllRequestsByEqipmentId(eqipment_id: string): Promise<IMaintenanceRequest[]> {
-	return (await orm.openDb()).maintenances.filter(request => request.equipmentId === eqipment_id)
-}
+const MaintenanceRequestRepo: IMaintenanceRequestRepo = {
+	findMany,
+	findById,
+	countByEquipmentAndStatuses,
+	create,
+	update,
+	delete: delete_,
+};
 
 export default {
-	getOne,
-	getAll,
-	persists,
-	add,
-	update,
-	updateStatus,
-	delete: delete_,
-	getAllRequestsByEqipmentId
+	...MaintenanceRequestRepo,
+	deleteAllRequests,
+	insertMultiple,
 } as const;

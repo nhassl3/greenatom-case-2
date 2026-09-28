@@ -1,21 +1,24 @@
-import { IEquipment, IEquipmentPatch } from '@src/models/Equipment.model'
+import Paths from '@src/common/constants/Paths'
+import { EquipmentListQuery } from '@src/common/utils/equipment.validators'
+import { RequestListQuery } from '@src/common/utils/requests.validators'
+import { EquipmentCreateDto, EquipmentPatchDto } from '@src/models/Equipment.model'
 import EquipmentService from '@src/services/EquipmentService'
 import { getValidated, Req, Res } from './common/express-types'
-import { created, ok, okE } from './common/respond'
+import * as respond from './common/respond'
+
 
 // Functions
 
 /**
- * Список оборудования: фильтры,
-сортировка, пагинация
- * 
+ * Список оборудования: фильтры,сортировка, пагинация
  * @param _ request
  * @param res response
  * @route GET /api/equipment
  */
-async function get(_: Req, res: Res) {
-	const equipements = await EquipmentService.getAll();
-	ok(res, equipements);
+async function list(_: Req, res: Res) {
+	const { query } = getValidated<never, EquipmentListQuery, never>(res);
+	const { items, meta } = await EquipmentService.list(query);
+	respond.list(res, items, meta);
 }
 
 /**
@@ -23,10 +26,10 @@ async function get(_: Req, res: Res) {
  *
  * @route POST /api/equipment
  */
-async function add(req: Req, res: Res) {
-	const { body } = getValidated<unknown, unknown, IEquipment>(res);
-	await EquipmentService.addOne(body);
-	created(res, req.originalUrl, {"status": "created"});
+async function create(_: Req, res: Res) {
+	const { body } = getValidated<never, never, EquipmentCreateDto>(res);
+	const created = await EquipmentService.create(body);
+	respond.created(res, `${Paths._}${Paths.Equipment._}/${created.id}`, created);
 }
 
 /**
@@ -35,9 +38,8 @@ async function add(req: Req, res: Res) {
  * @route GET /api/equipment/:id
  */
 async function getById(_: Req, res: Res) {
-  const { params } = getValidated<{id: string}, unknown, unknown>(res);
-  const equipment = await EquipmentService.getOne(params.id);
-  ok(res, equipment);
+	const { params } = getValidated<{id: string}, never, never>(res);
+	respond.ok(res, await EquipmentService.getById(params.id));
 }
 
 /**
@@ -46,57 +48,50 @@ async function getById(_: Req, res: Res) {
  * @route PATCH /api/equipment/:id
  */
 async function patch(_: Req, res: Res) {
-	const { params, body } = getValidated<{id: string}, unknown, IEquipmentPatch>(res);
-  await EquipmentService.updateOne(params.id, body);
-  okE(res);
+	const { params, body } = getValidated<{id: string}, never, EquipmentPatchDto>(res);
+	respond.ok(res, await EquipmentService.update(params.id, body));
 }
 
 /**
- * Удаление (запрещено при наличии
-открытых заявок)
+ * Удаление (запрещено при наличии открытых заявок)
  *
  * @route DELETE /api/equipment/:id
  */
-async function delete_(_: Req, res: Res) {
-	const { params } = getValidated<{id: string}, unknown, unknown>(res);
-  await EquipmentService.deleteOne(params.id);
-  okE(res);
+async function remove(_: Req, res: Res) {
+	const { params } = getValidated<{id: string}, never, never>(res);
+	await EquipmentService.remove(params.id);
+	respond.noContent(res);
 }
 
 /**
- * Заявки по конкретной единице
-оборудования
- * @param req request
- * @param res response
- * @route /api/equipment/:id/requests
+ * Заявки по конкретной единице оборудования
+ *
+ * @route GET /api/equipment/:id/requests
  */
-async function getRequest(_: Req, res: Res) {
-	const { params } = getValidated<{id: string}, unknown, unknown>(res);
-	const equipmentRequests = await EquipmentService.getEquipmentRequests(params.id);
-	ok(res, equipmentRequests);
+async function listRequests(_: Req, res: Res) {
+	const { params, query } = getValidated<{id: string}, Omit<RequestListQuery, 'equipmentId'>, never>(res);
+	const { items, meta } = await EquipmentService.listRequests(params.id, query);
+	respond.list(res, items, meta);
 }
 
 /**
- * Прогноз по координатам объекта и
-пригодность окна для наружных работ
- * @param req request
- * @param res response
- * @route /api/equipment/:id/weather
+ * Прогноз по координатам объекта и пригодность окна для наружных работ
+ *
+ * @route GET /api/equipment/:id/weather
  */
-async function getWeather(req: Req, res: Res) {
-	const { params } = getValidated<{id: string}, unknown, unknown>(res);
-	const equipmentWeather = await EquipmentService.getEquipmentWeather(params.id);
-	ok(res, equipmentWeather);
+async function getWeather(_: Req, res: Res) {
+	const { params } = getValidated<{id: string}, never, never>(res);
+	respond.ok(res, await EquipmentService.getWeather(params.id));
 }
 
 // export default
 
 export default {
-	get,
-	add,
+	list,
+	create,
 	getById,
 	patch,
-	delete: delete_,
-	getRequest,
-	getWeather
+	remove,
+	listRequests,
+	getWeather,
 } as const;

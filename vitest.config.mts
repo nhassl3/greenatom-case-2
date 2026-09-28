@@ -1,5 +1,5 @@
-import path from 'path';
-import { defineConfig } from 'vitest/config';
+import path from 'path'
+import { defineConfig } from 'vitest/config'
 
 const config = defineConfig({
   test: {
@@ -7,6 +7,7 @@ const config = defineConfig({
     environment: 'node',
     setupFiles: ['dotenv/config', './tests/support/agent.ts'],
     isolate: true,
+    fileParallelism: false,
     env: {
       DOTENV_CONFIG_PATH: 'config/.env.test',
     },

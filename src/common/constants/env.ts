@@ -26,9 +26,9 @@ const EnvVars = jetEnv({
   WeatherApiUrl: str,
   RequestTimeoutMs: num,
   WeatherForecastDays: num,
-  WeatherMaxWindMs: num,
-  WeatherMaxPrecipitationMm: num,
-  ApiKey: str,
+  WeatherTemperatureUnit: str,
+  WeatherPrecipitationUnit: str,
+  ApiKey: (v: unknown): v is string => typeof v === 'string',
 });
 
 /******************************************************************************
