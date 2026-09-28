@@ -41,6 +41,15 @@ export default defineConfig([
       'n/no-extraneous-import': 'error'
     },
   },
+  {
+    files: ['tests/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      'no-process-env': 'off',
+    },
+  },
   // MUST be last — disables ALL formatting rules
   eslintConfigPrettier,
 ]);
