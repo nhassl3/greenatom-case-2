@@ -19,7 +19,7 @@ export function errorHandler(err: unknown, req: Request, res: Response, _next: N
 		appErr = new AppError(500, "INTERNAL_ERROR", IsProduction ? "Внутренняя ошибка сервера" : String((err as Error)?.message ?? err));
 	}
 
-	if (appErr.status < 500) logger.warn(`[${requestId}] ${req.method} ${req.originalUrl} ${(err as Error)?.stack ?? String(err)}`);
+	if (appErr.status < 500) logger.warn(`[${requestId}] ${appErr.code}: ${appErr.message}`);
 
 	res.status(appErr.status).json({
 		error: {

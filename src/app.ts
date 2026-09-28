@@ -20,39 +20,38 @@ import { requestLogger } from './middlewares/requestLogger'
 ******************************************************************************/
 
 const app = express();
-app.set('trust proxy', 1); // docker
+app.set('trust proxy', 1); // docker: корректный req.ip для rate limit
+
+const viewsDir = path.join(__dirname, 'views');
+const staticDir = path.join(__dirname, 'public');
 
 // **** Middleware **** //
 
-// Basic middleware
-app.use(requestId);
-app.use(requestLogger);
-app.use(helmet());
-app.use(cors(corsOptions));
-app.use(Paths._, apiLimiter);
-app.use(express.json({limit: EnvVars.BodyLimit}));
-app.use(express.urlencoded({ extended: true }));
-
-// Add APIs, must be after middleware
-app.use(Paths._, BaseRouter);
-
-app.use(notFound);
-app.use(errorHandler);
+app.use(requestId);                                   // 1. id нужен логгеру и ответу на любую ошибку, включая битый JSON
+app.use(requestLogger);                               // 2. пишет строку на 'finish': видит итоговый статус и длительность
+app.use(helmet());                                    // 3. защитные заголовки на всех ответах
+app.use(cors(corsOptions));                           // 4. до маршрутов, чтобы preflight OPTIONS отвечал сразу
+app.use(Paths._, apiLimiter);                         // 5. лимит только на /api и до разбора тела
+app.use(express.json({ limit: EnvVars.BodyLimit }));  // 6. JSON с лимитом размера → 413
 
 // **** FrontEnd Content **** //
 
-// Set views directory (html)
-const viewsDir = path.join(__dirname, 'views');
-app.set('views', viewsDir);
-
-// Set static directory (js and css).
-const staticDir = path.join(__dirname, 'public');
 app.use(express.static(staticDir));
 
 // Nav to api health status by default
 app.get('/', (_: Request, res: Response) => {
   return res.redirect('/api/health');
 });
+
+app.get('/requests', (_: Request, res: Response) => {
+  res.sendFile('requests.html', { root: viewsDir });
+});
+
+// **** API **** //
+
+app.use(Paths._, BaseRouter);                         // 7. маршруты; validate подключается внутри них
+app.use(notFound);                                    // 8. всё, что не совпало → 404 в общем формате
+app.use(errorHandler);                                // 9. последним: сюда стекаются все ошибки
 
 /******************************************************************************
                                 Export default
