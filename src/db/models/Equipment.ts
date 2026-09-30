@@ -7,7 +7,7 @@ import type { Site } from './Site'
 
 export class Equipment extends Model<InferAttributes<Equipment>, InferCreationAttributes<Equipment>> {
 	declare id: CreationOptional<string>;
-	declare siteId: ForeignKey<Site['id']>;
+	declare siteId: ForeignKey<Site['id']> | null;
 	declare name: string;
 	declare type: EquipmentType;
 	declare serialNumber: string;
