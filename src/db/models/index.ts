@@ -20,7 +20,7 @@ RequestAssignee.initModel(sequelize);
 // Ассоциации. Правила ON DELETE / ON UPDATE совпадают с миграциями.
 
 // Площадка → Оборудование (1:N)
-const siteFk = { name: 'siteId', allowNull: false };
+const siteFk = { name: 'siteId', allowNull: true };
 Site.hasMany(Equipment, { as: 'equipment', foreignKey: siteFk, onDelete: 'RESTRICT', onUpdate: 'CASCADE' });
 Equipment.belongsTo(Site, { as: 'site', foreignKey: siteFk, onDelete: 'RESTRICT', onUpdate: 'CASCADE' });
 
@@ -68,13 +68,12 @@ Technician.hasMany(RequestAssignee, { as: 'assignments', foreignKey: 'technician
 RequestAssignee.belongsTo(Technician, { as: 'technician', foreignKey: 'technicianId' });
 
 export {
-	sequelize,
 	Equipment,
 	EquipmentPassport,
 	MaintenanceRequest,
 	RequestAssignee,
-	RequestStatusHistory,
-	Site,
+	RequestStatusHistory, sequelize, Site,
 	Specialization,
-	Technician,
-};
+	Technician
+}
+

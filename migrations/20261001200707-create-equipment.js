@@ -18,7 +18,7 @@ module.exports = {
         },
         site_id: {
           type: Sequelize.UUID,
-          allowNull: false,
+          allowNull: true,
           references: { model: 'sites', key: 'id' },
           onDelete: 'RESTRICT',
           onUpdate: 'CASCADE',
@@ -30,6 +30,7 @@ module.exports = {
         installed_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.fn('now') },
         created_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.fn('now') },
         updated_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.fn('now') },
+        deleted_at: { type: Sequelize.DATE, allowNull: true},
       }, { transaction });
 
       await queryInterface.addIndex('equipment', ['site_id'], { name: 'equipment_site_id_idx', transaction });

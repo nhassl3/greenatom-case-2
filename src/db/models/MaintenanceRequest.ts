@@ -35,11 +35,13 @@ export class MaintenanceRequest extends Model<InferAttributes<MaintenanceRequest
 			author: { type: DataTypes.STRING(120), allowNull: true },
 			createdAt: { type: DataTypes.DATE, allowNull: false },
 			updatedAt: { type: DataTypes.DATE, allowNull: false },
-			deletedAt: DataTypes.DATE,
+			deletedAt: { type: DataTypes.DATE, allowNull: true},
 		}, {
 			sequelize,
 			tableName: 'maintenance_requests',
 			modelName: 'MaintenanceRequest',
+			paranoid: true,
+			timestamps: true,
 			indexes: [
 				{ name: 'maintenance_requests_equipment_id_idx', fields: ['equipment_id'] },
 				{ name: 'maintenance_requests_status_idx', fields: ['status'] },

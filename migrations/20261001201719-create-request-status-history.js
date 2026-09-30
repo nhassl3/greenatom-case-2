@@ -39,10 +39,6 @@ module.exports = {
   async down(queryInterface) {
     await queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.dropTable('request_status_history', { transaction });
-      await queryInterface.sequelize.query(
-        'DROP FUNCTION IF EXISTS request_status_history_forbid_change()',
-        { transaction },
-      );
     });
   },
 };
