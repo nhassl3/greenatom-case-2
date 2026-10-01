@@ -22,8 +22,20 @@ const Paths = {
     GetId: "/:id",
     Patch: "/:id",
     PatchStatus: "/:id/status",
-    Delete: "/:id"
-  }
+    Delete: "/:id",
+    Bulk: "/bulk",
+    Assignees: "/:id/assignees",
+    Unassign: "/:id/assignees/:userId",
+    History: "/:id/history",
+  },
+  Sites: {
+    _: "/sites",
+    Summary: "/:id/summary",
+  },
+  Reports: {
+    _: "/reports",
+    EquipmentLoad: "/equipment-load",
+  },
 } as const;
 
 export const JetPaths = jetPaths(Paths);
