@@ -1,5 +1,6 @@
 import { IsProduction } from '@src/common/constants/env'
 import { AppError } from '@src/common/errors/AppError'
+import { mapDbError } from '@src/common/errors/db'
 import logger from '@src/common/utils/logger'
 import type { Request, Response } from 'express'
 import { NextFunction } from 'express'
@@ -7,6 +8,7 @@ import { NextFunction } from 'express'
 export function errorHandler(err: unknown, req: Request, res: Response, _next: NextFunction) {
 	const requestId = res.locals.requestId as string;
 	
+	const dbErr = mapDbError(err);
 	let appErr: AppError;
 	if (err instanceof AppError) {
 		appErr = err;
@@ -14,6 +16,8 @@ export function errorHandler(err: unknown, req: Request, res: Response, _next: N
 		appErr = new AppError(400, 'INVALID_JSON', 'Тело запроса не является корректным JSON');
 	} else if (isBodyParserError(err, 'entity.too.large')) {
 		appErr = new AppError(413, 'PAYLOAD_TOO_LARGE', 'Превышен допустимый размер тела запроса');
+	} else if (dbErr) {
+		appErr = dbErr;
 	} else {
 		logger.err(`[${requestId}] ${req.method} ${req.originalUrl} ${(err as Error)?.stack ?? String(err)}`);
 		appErr = new AppError(500, "INTERNAL_ERROR", IsProduction ? "Внутренняя ошибка сервера" : String((err as Error)?.message ?? err));
