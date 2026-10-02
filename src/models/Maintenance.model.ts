@@ -1,5 +1,6 @@
-import { v4 } from 'uuid'
+import { v4 as uuid } from 'uuid'
 import { RequestPriority, RequestStatus } from './common/general'
+import { IRequestAssignee } from './RequestAssignee.model'
 
 // Types
 
@@ -13,9 +14,18 @@ export interface IMaintenanceRequest {
 	description?: string;
 	priority: RequestPriority;
 	status: RequestStatus; // BY DEFAULT 'new'
-	plannedAt?: string; // ISO Date-time
-	createdAt: string; // ISO Date-time
-	updatedAt: string; // ISO Date-time
+	plannedAt?: Date | null; // optional ISO Date-time
+	author: string;
+	createdAt: Date; // ISO Date-time
+	updatedAt: Date; // ISO Date-time
+	assignees?: IAssignee[]; // только в карточке
+}
+
+export interface IAssignee {
+	technicianId: string;
+	fullName: string;
+	role: IRequestAssignee['role'];
+	plannedHours: number;
 }
 
 export interface RequestCreateDto {
@@ -23,27 +33,25 @@ export interface RequestCreateDto {
 	title: string;
 	description?: string;
 	priority: RequestPriority;
-	plannedAt?: Date;
+	author?: string;
+	plannedAt: Date | null;
 }
 
-export type RequestPatchDto = Partial<Omit<RequestCreateDto, 'equipmentId'>>;
-
-export type IMaintenanceRequestChanges = Partial<
-	Pick<IMaintenanceRequest, 'title' | 'description' | 'priority' | 'plannedAt' | 'status'>
->;
+export type RequestPatchDto = Partial<Omit<RequestCreateDto, 'equipmentId'>> & { status?: RequestStatus };
 
 // Functions
 
 function new_(dto: RequestCreateDto): IMaintenanceRequest {
-	const now = new Date().toISOString();
+	const now = new Date();
 	return {
-		id: v4(),
+		id: uuid(),
 		equipmentId: dto.equipmentId,
 		title: dto.title,
 		...(dto.description !== undefined ? { description: dto.description } : {}),
 		priority: dto.priority,
 		status: 'new',
-		...(dto.plannedAt ? { plannedAt: dto.plannedAt.toISOString() } : {}),
+		plannedAt: dto.plannedAt,
+		author: dto.author ?? '',
 		createdAt: now,
 		updatedAt: now,
 	};
