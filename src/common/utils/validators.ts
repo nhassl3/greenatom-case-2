@@ -7,6 +7,7 @@ export const EQUIPMENT_STATUSES = ['operational', 'maintenance', 'fault', 'decom
 export const REQUEST_STATUSES = ['new', 'in_progress', 'done', 'rejected'] as const;
 export const REQUEST_PRIORITIES = ['low', 'medium', 'high', 'critical'] as const;
 export const OPEN_REQUEST_STATUSES = ['new', 'in_progress'] as const;
+export const ASSIGNEE_ROLES = ['lead', 'member'] as const;
 
 type Check<T> = (v: unknown) => v is T;
 
