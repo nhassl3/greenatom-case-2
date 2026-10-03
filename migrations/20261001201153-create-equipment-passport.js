@@ -29,7 +29,7 @@ module.exports = {
 
       await queryInterface.sequelize.query(`
         ALTER TABLE equipment_passports
-          ADD CONSTRAINT equipment_passports_nominal_power_kw_chk CHECK (nominal_power_kw > 0)
+          ADD CONSTRAINT equipment_passports_nominal_power_chk CHECK (nominal_power > 0)
       `, { transaction });
     });
   },
