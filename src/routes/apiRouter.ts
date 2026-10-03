@@ -1,12 +1,15 @@
 import { Router } from 'express'
 
 import Paths from '@src/common/constants/Paths'
-import { IdParams } from '@src/common/utils/common'
+import { AssigneeParams, IdParams } from '@src/common/utils/common'
 import { EquipmentSchemas } from '@src/common/utils/equipment.validators'
+import { ReportSchemas } from '@src/common/utils/reports.validators'
 import { RequestSchemas } from '@src/common/utils/requests.validators'
 import EquipmentController from '@src/controllers/EquipmentController'
 import HealthController from '@src/controllers/HealthController'
 import MaintenanceController from '@src/controllers/MaintenanceRequestsController'
+import ReportsController from '@src/controllers/ReportsController'
+import SitesController from '@src/controllers/SitesController'
 import { requireApiKey } from '@src/middlewares/apiKey'
 import { validate } from '@src/middlewares/validate'
 
@@ -40,12 +43,27 @@ const maintenanceRouter = Router();
 
 maintenanceRouter.get(Paths.Requests.Get, validate({ query: RequestSchemas.listQuery }), MaintenanceController.list);
 maintenanceRouter.post(Paths.Requests.Add, validate({ body: RequestSchemas.create }), MaintenanceController.create);
+maintenanceRouter.post(Paths.Requests.Bulk, validate({ body: RequestSchemas.bulk }), MaintenanceController.bulk);
 maintenanceRouter.get(Paths.Requests.GetId, validate({ params: IdParams }), MaintenanceController.getById);
 maintenanceRouter.patch(Paths.Requests.Patch, validate({ params: IdParams, body: RequestSchemas.patch }), MaintenanceController.patch);
 maintenanceRouter.patch(Paths.Requests.PatchStatus, validate({ params: IdParams, body: RequestSchemas.status }), MaintenanceController.patchStatus);
 maintenanceRouter.delete(Paths.Requests.Delete, validate({ params: IdParams }), MaintenanceController.remove);
 
+maintenanceRouter.post(Paths.Requests.Assignees, validate({ params: IdParams, body: RequestSchemas.assignees }), MaintenanceController.assign);
+maintenanceRouter.delete(Paths.Requests.Unassign, validate({ params: AssigneeParams }), MaintenanceController.unassign);
+maintenanceRouter.get(Paths.Requests.History, validate({ params: IdParams }), MaintenanceController.history);
+
 apiRouter.use(Paths.Requests._, maintenanceRouter);
+
+// ----------------------- Sites & Reports --------------------------------- //
+
+const sitesRouter = Router();
+sitesRouter.get(Paths.Sites.Summary, validate({ params: IdParams }), SitesController.summary);
+apiRouter.use(Paths.Sites._, sitesRouter);
+
+const reportsRouter = Router();
+reportsRouter.get(Paths.Reports.EquipmentLoad, validate({ query: ReportSchemas.equipmentLoad }), ReportsController.equipmentLoad);
+apiRouter.use(Paths.Reports._, reportsRouter);
 
 /******************************************************************************
                                 Export

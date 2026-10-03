@@ -1,7 +1,7 @@
 import Paths from '@src/common/constants/Paths'
 import { EquipmentListQuery } from '@src/common/utils/equipment.validators'
 import { RequestListQuery } from '@src/common/utils/requests.validators'
-import { EquipmentCreateDto, EquipmentPatchDto } from '@src/models/Equipment.model'
+import { EquipmentCreateDto, IEquipmentPatchDto } from '@src/models/Equipment.model'
 import EquipmentService from '@src/services/EquipmentService'
 import { getValidated, Req, Res } from './common/express-types'
 import * as respond from './common/respond'
@@ -48,7 +48,7 @@ async function getById(_: Req, res: Res) {
  * @route PATCH /api/equipment/:id
  */
 async function patch(_: Req, res: Res) {
-	const { params, body } = getValidated<{id: string}, never, EquipmentPatchDto>(res);
+	const { params, body } = getValidated<{id: string}, never, IEquipmentPatchDto>(res);
 	respond.ok(res, await EquipmentService.update(params.id, body));
 }
 
