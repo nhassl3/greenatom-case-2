@@ -22,7 +22,10 @@ export class EquipmentPassport extends Model<InferAttributes<EquipmentPassport>,
 			nominalPower: {
 				type: DataTypes.DECIMAL(10, 2),
 				allowNull: false,
-				validate: { gt: 0 },
+				validate: { validate: { isPositive(value: unknown) {
+						if (!(Number(value) > 0)) throw new Error('Значение должно быть больше 0');
+					},
+				}, },
 				get() { return Number(this.getDataValue('nominalPower')); },
 			},
 			lastVerificationDate: { type: DataTypes.DATEONLY, allowNull: true },

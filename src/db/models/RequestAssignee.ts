@@ -25,7 +25,10 @@ export class RequestAssignee extends Model<InferAttributes<RequestAssignee>, Inf
 			plannedHours: {
 				type: DataTypes.DECIMAL(5, 2),
 				allowNull: false,
-				validate: { gt: 0},
+				validate: { isPositive(value: unknown) {
+						if (!(Number(value) > 0)) throw new Error('Значение должно быть больше 0');
+					},
+				},
 				get() { return Number(this.getDataValue('plannedHours')); },
 			},
 			createdAt: { type: DataTypes.DATE, allowNull: false },

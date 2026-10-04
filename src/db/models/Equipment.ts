@@ -1,13 +1,13 @@
 import { EQUIPMENT_STATUSES, EQUIPMENT_TYPES } from '@src/common/utils/validators'
 import { EquipmentStatus, EquipmentType } from '@src/models/common/general'
-import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize } from 'sequelize'
+import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute, Sequelize, col, fn } from 'sequelize'
 import type { EquipmentPassport } from './EquipmentPassport'
 import type { MaintenanceRequest } from './MaintenanceRequest'
 import type { Site } from './Site'
 
 export class Equipment extends Model<InferAttributes<Equipment>, InferCreationAttributes<Equipment>> {
 	declare id: CreationOptional<string>;
-	declare siteId: ForeignKey<Site['id']>;
+	declare siteId: ForeignKey<Site['id']> | null;
 	declare name: string;
 	declare type: EquipmentType;
 	declare serialNumber: string;
@@ -53,7 +53,7 @@ export class Equipment extends Model<InferAttributes<Equipment>, InferCreationAt
 			paranoid: true,
 			timestamps: true,
 			indexes: [
-				{ name: 'equipment_serial_number_active_uq', unique: true, fields: ['serial_number']},
+				{ name: 'equipment_serial_number_active_uq', unique: true, fields: [fn('lower', col('serial_number'))], where: { deleted_at: null } }, // как в миграции: среди неудалённых, без учёта регистра
 				{ name: 'equipment_site_id_idx', fields: ['site_id'] },
 			],
 		});
