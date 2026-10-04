@@ -98,32 +98,6 @@ async function delete_(id: string, opts?: TxOpts): Promise<boolean> {
 	return affected > 0;
 }
 
-/**
- * @testOnly
- */
-async function deleteAllEquipments(): Promise<void> {
-	await Equipment.destroy({ where: {}, force: true });
-}
-
-/**
- * @testOnly
- */
-async function insertMultiple(equipments: IEquipment[] | readonly IEquipment[]): Promise<void> {
-	await Equipment.bulkCreate(equipments.map((e) => ({
-		id: e.id,
-		siteId: e.siteId,
-		name: e.name,
-		type: e.type,
-		serialNumber: e.serialNumber,
-		status: e.status,
-		lat: e.location.lat,
-		lon: e.location.lon,
-		installedAt: e.installedAt,
-		createdAt: e.createdAt,
-		updatedAt: e.updatedAt,
-	})));
-}
-
 const EquipmentRepo: IEquipmentRepo = {
 	findMany,
 	findById,
@@ -135,6 +109,4 @@ const EquipmentRepo: IEquipmentRepo = {
 
 export default {
 	...EquipmentRepo,
-	deleteAllEquipments,
-	insertMultiple,
 } as const;

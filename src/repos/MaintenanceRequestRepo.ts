@@ -94,31 +94,6 @@ async function delete_(id: string, opts?: TxOpts): Promise<boolean> {
 	return affected > 0;
 }
 
-/**
- * @testOnly
- */
-async function deleteAllRequests(): Promise<void> {
-	await MaintenanceRequest.destroy({ where: {}, force: true });
-}
-
-/**
- * @testOnly
- */
-async function insertMultiple(requests: IMaintenanceRequest[] | readonly IMaintenanceRequest[]): Promise<void> {
-	await MaintenanceRequest.bulkCreate(requests.map((r) => ({
-		id: r.id,
-		equipmentId: r.equipmentId,
-		title: r.title,
-		description: r.description ?? null,
-		priority: r.priority,
-		status: r.status,
-		plannedAt: r.plannedAt,
-		author: r.author,
-		createdAt: r.createdAt,
-		updatedAt: r.updatedAt,
-	})));
-}
-
 const MaintenanceRequestRepo: IMaintenanceRequestRepo = {
 	findMany,
 	findById,
@@ -131,7 +106,5 @@ const MaintenanceRequestRepo: IMaintenanceRequestRepo = {
 
 export default {
 	...MaintenanceRequestRepo,
-	deleteAllRequests,
-	insertMultiple,
 } as const;
 

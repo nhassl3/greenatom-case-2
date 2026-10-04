@@ -1,7 +1,6 @@
 import type { Request, Response } from 'express'
 import express from 'express'
 import helmet from 'helmet'
-import path from 'path'
 
 import Paths from '@src/common/constants/Paths'
 import BaseRouter from '@src/routes/apiRouter'

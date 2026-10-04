@@ -1,15 +1,18 @@
 import app from './app'
 import EnvVars, { IsProduction } from './common/constants/env'
 import logger from './common/utils/logger'
+import DbEnv from './db/config'
 import { sequelize } from './db/models'
 
 async function start() {
-  sequelize.authenticate()
-	.then(() => console.log('Database connection established.'))
-	.catch((err) => {
-		console.error('Unable to connect to the database:', err);
-		process.exit(1);
-	});
+  try {
+    await sequelize.authenticate()
+  } catch (err) {
+    const reason = err instanceof Error ? (err.message || err.name) : String(err);
+    logger.err(`Не удалось подключиться к БД ${DbEnv.DbHost}:${DbEnv.DbPort}/${DbEnv.DbName}: ${reason}`);
+    process.exit(1);
+  }
+  logger.info('Database connection established');
 
   const server = app.listen(EnvVars.Port, (err) => {
     if (err) { logger.err(err.message); process.exit(1); }
