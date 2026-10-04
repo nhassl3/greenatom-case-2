@@ -6,3 +6,4 @@ config/.env.development
 config/.env.production
 src/**/*.js
 !src/public/scripts/*.js
+config/.env.test.local

@@ -18,9 +18,28 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+  migrate:
+    # build-стейдж: в нём есть sequelize-cli (devDependencies)
+    build:
+      context: .
+      target: build
+    image: greenatom-case-3-migrate
+    env_file: config/.env.production
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      NODE_ENV: production
+    command: ["sh", "-c", "npm run db:migrate && npm run db:seed"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
   api:
     build: .
-    image: greenatom-case-2
+    image: greenatom-case-3
     env_file: config/.env.production
     environment:
       # порт внутри контейнера фиксирован, наружу пробрасывается ниже
@@ -28,13 +47,10 @@ services:
       DB_HOST: postgres
       DB_PORT: 5432
     depends_on:
-      postgres:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     ports:
       - "3000:3000"
-    volumes:
-      # JSON-база переживает пересоздание контейнера
-      - api-data:/app/dist/repos/common
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
       interval: 15s
@@ -45,4 +61,3 @@ services:
 
 volumes:
   postgres-data:
-  api-data:

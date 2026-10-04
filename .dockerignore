@@ -5,3 +5,4 @@ dist
 config/.env.*
 !config/.env.example
 !config/.env.test
+config/.env.test.local
