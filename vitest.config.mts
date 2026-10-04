@@ -5,7 +5,8 @@ const config = defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    setupFiles: ['dotenv/config', './tests/support/agent.ts'],
+    globalSetup: ['./tests/support/global-env.ts', './tests/support/global-setup.ts'],
+    setupFiles: ['./tests/support/load-env.ts', 'dotenv/config', './tests/support/agent.ts'],
     isolate: true,
     fileParallelism: false,
     env: {
