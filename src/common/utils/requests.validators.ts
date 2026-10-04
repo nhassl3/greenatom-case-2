@@ -1,9 +1,31 @@
 import type { RequestCreateDto } from '@src/models/Maintenance.model'
+import type { RequestStatus } from '@src/models/common/general'
 import { defineSchema } from './defineSchema'
-import { arrayOfLength, isUuid, oneOf, optional, optionalIsoDate, optionalStringLength, queryInt, REQUEST_PRIORITIES, REQUEST_STATUSES, sortParam, stringLength } from './validators'
+import { arrayOfLength, ASSIGNEE_ROLES, isUuid, oneOf, optional, optionalIsoDate, optionalStringLength, queryInt, REQUEST_PRIORITIES, REQUEST_STATUSES, sortParam, stringLength } from './validators'
 
 const REQUEST_SORT = ['createdAt', 'updatedAt', 'plannedAt', 'priority', 'status', 'title'] as const;
 export const BULK_MAX_ITEMS = 100;
+export const ASSIGNEES_MAX = 20;
+export const MAX_PLANNED_HOURS = 999.99;
+
+export interface AssigneeItem {
+	technicianId: string;
+	role: (typeof ASSIGNEE_ROLES)[number];
+	plannedHours: number;
+}
+
+const isAssigneeItem = (v: unknown): v is AssigneeItem => {
+	if (typeof v !== 'object' || v === null) return false;
+	const { technicianId, role, plannedHours } = v as Record<string, unknown>;
+	return isUuid(technicianId)
+		&& (ASSIGNEE_ROLES as readonly unknown[]).includes(role)
+		&& typeof plannedHours === 'number' && plannedHours > 0 && plannedHours <= MAX_PLANNED_HOURS;
+};
+
+// 1..20 исполнителей, ровно один lead
+const isAssigneeList = (v: unknown): v is AssigneeItem[] =>
+	Array.isArray(v) && v.length >= 1 && v.length <= ASSIGNEES_MAX && v.every(isAssigneeItem)
+	&& v.filter((a) => a.role === 'lead').length === 1;
 
 const messages = {
 	equipmentId: "Требуется UUID оборудования",
@@ -64,12 +86,15 @@ export const RequestSchemas = {
 		priority: optional(oneOf(REQUEST_PRIORITIES)),
 		plannedAt: optionalIsoDate,
 	}, messages),
-	status: defineSchema({ status: oneOf(REQUEST_STATUSES) }, messages),
+	status: defineSchema<{ status: RequestStatus }>({ status: oneOf(REQUEST_STATUSES) }, messages),
 	listQuery: defineSchema<RequestListQuery>({
 		...listFilterFields,
 		equipmentId: optional(isUuid),
 	}, listMessages),
 	equipmentListQuery: defineSchema<Omit<RequestListQuery, 'equipmentId'>>(listFilterFields, listMessages),
+	assignees: defineSchema<{ assignees: AssigneeItem[] }>({
+		assignees: isAssigneeList,
+	}, { assignees: `Массив из 1–${ASSIGNEES_MAX} элементов {technicianId: UUID, role: ${ASSIGNEE_ROLES.join('|')}, plannedHours: 0 < x ≤ ${MAX_PLANNED_HOURS}}, ровно один lead` }),
 	bulk: defineSchema<{ items: unknown[] }>({
 		items: arrayOfLength(1, BULK_MAX_ITEMS),
 	}, { items: `Массив из 1–${BULK_MAX_ITEMS} заявок` }),

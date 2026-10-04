@@ -1,7 +1,6 @@
 import type { Request, Response } from 'express'
 import express from 'express'
 import helmet from 'helmet'
-import path from 'path'
 
 import Paths from '@src/common/constants/Paths'
 import BaseRouter from '@src/routes/apiRouter'
@@ -22,9 +21,6 @@ import { requestLogger } from './middlewares/requestLogger'
 const app = express();
 app.set('trust proxy', 1); // docker: корректный req.ip для rate limit
 
-const viewsDir = path.join(__dirname, 'views');
-const staticDir = path.join(__dirname, 'public');
-
 // **** Middleware **** //
 
 app.use(requestId);                                   // 1. id нужен логгеру и ответу на любую ошибку, включая битый JSON
@@ -36,15 +32,9 @@ app.use(express.json({ limit: EnvVars.BodyLimit }));  // 6. JSON с лимито
 
 // **** FrontEnd Content **** //
 
-app.use(express.static(staticDir));
-
 // Nav to api health status by default
 app.get('/', (_: Request, res: Response) => {
   return res.redirect('/api/health');
-});
-
-app.get('/requests', (_: Request, res: Response) => {
-  res.sendFile('requests.html', { root: viewsDir });
 });
 
 // **** API **** //

@@ -1,9 +1,10 @@
 import supertest, { Test } from 'supertest';
 import TestAgent from 'supertest/lib/agent';
-import { beforeAll } from 'vitest';
+import { afterAll, beforeAll } from 'vitest';
 
-import MockOrm from '@src/repos/MockOrm';
 import app from '@src/app';
+import { sequelize } from '@src/db/models';
+import { assertTestDb } from './guard';
 
 /******************************************************************************
                                     Run
@@ -11,9 +12,13 @@ import app from '@src/app';
 
 let agent: TestAgent<Test>;
 
-beforeAll(async () => {
+beforeAll(() => {
+  assertTestDb();
   agent = supertest.agent(app);
-  await MockOrm.cleanDb();
+});
+
+afterAll(async () => {
+  await sequelize.close();
 });
 
 /******************************************************************************

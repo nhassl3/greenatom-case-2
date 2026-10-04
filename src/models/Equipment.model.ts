@@ -1,5 +1,6 @@
-import { v4 } from 'uuid'
+import { v4 as uuid } from 'uuid'
 import { EquipmentStatus, EquipmentType, ILocation } from './common/general'
+import { IEquipmentPassport } from './EquipmentPassport.model'
 
 // Types
 
@@ -8,14 +9,19 @@ import { EquipmentStatus, EquipmentType, ILocation } from './common/general'
 */
 export interface IEquipment {
 	id: string; // @PK UUID
+	siteId: string | null; // @FK ISite.id, optional
 	name: string; // @REQUIRED
 	type: EquipmentType;
 	serialNumber: string; // @UNIQUE
 	location: ILocation;
 	status: EquipmentStatus;
-	installedAt: string; // ISO Date-time, not in future
+	installedAt: Date; // ISO Date-time, not in future
+	createdAt: Date; // ISO Date-time
+	updatedAt: Date; // ISO Date-time
+	passport?: IEquipmentPassport | null; // только в карточке
 };
 export interface EquipmentCreateDto {
+	siteId?: string | null;
 	name: string;
 	type: EquipmentType;
 	serialNumber: string;
@@ -24,25 +30,22 @@ export interface EquipmentCreateDto {
 	installedAt?: Date;
 }
 
-export type EquipmentPatchDto = Partial<Omit<EquipmentCreateDto, 'location'>> & {
-	location?: Partial<ILocation>;
-};
-
-export type IEquipmentPatch = Partial<Omit<IEquipment, 'id' | 'location'>> & {
-	location?: Partial<ILocation>;
-};
+export type IEquipmentPatchDto = Partial<Omit<EquipmentCreateDto, 'location'>> & { location?: Partial<ILocation> };
 
 // Functions
 
 function new_(dto: EquipmentCreateDto): IEquipment {
 	return {
-		id: v4(),
+		id: uuid(),
+		siteId: dto.siteId ?? null,
 		name: dto.name,
 		type: dto.type,
 		serialNumber: dto.serialNumber,
-		location: { lat: dto.location.lat, lon: dto.location.lon },
+		location: dto.location,
 		status: dto.status ?? 'operational',
-		installedAt: (dto.installedAt ?? new Date()).toISOString(),
+		installedAt: (dto.installedAt ?? new Date()),
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	};
 }
 

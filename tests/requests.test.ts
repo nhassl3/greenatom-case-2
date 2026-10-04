@@ -1,11 +1,12 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest'
 
-import { REQUEST_STATUSES } from '@src/common/utils/validators';
-import { AllowedStatusTransitions } from '@src/services/MaintenanceRequestService';
-import RequestRepo from '@src/repos/MaintenanceRequestRepo';
+import { REQUEST_STATUSES } from '@src/common/utils/validators'
+import RequestRepo from '@src/repos/MaintenanceRequestRepo'
+import AssigneeRepo from '@src/repos/RequestAssigneeRepo'
+import { AllowedStatusTransitions } from '@src/services/MaintenanceRequestService'
 
-import { agent } from './support/agent';
-import { IDS, seed } from './support/fixtures';
+import { agent } from './support/agent'
+import { IDS, seed } from './support/fixtures'
 
 const validRequest = {
   equipmentId: IDS.turbine,
@@ -77,6 +78,7 @@ describe('PATCH /api/requests/:id/status', () => {
 
   it.each(pairs)('%s → %s', async (from, to) => {
     await RequestRepo.update(IDS.reqNew, { status: from });
+    await AssigneeRepo.replaceForRequest(IDS.reqNew, [{ technicianId: IDS.techLead, role: 'lead', plannedHours: 1 }]); // in_progress требует бригаду
     const res = await agent.patch(`/api/requests/${IDS.reqNew}/status`).send({ status: to });
     if (AllowedStatusTransitions[from].includes(to)) {
       expect(res.status).toBe(200);
