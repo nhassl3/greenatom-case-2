@@ -46,8 +46,8 @@ export function parseForecastResponse(data: unknown): DailyForecast[] {
 
 export async function getForecast({ location, days }: ForecastParams): Promise<DailyForecast[]> {
 	const data = await fetchJson(EnvVars.WeatherApiUrl, {
-		lattitude: location.lat,
-		longtitude: location.lon,
+		latitude: location.lat,
+		longitude: location.lon,
 		daily: 'temperature_2m_max,temperature_2m_min,precipitation_sum',
 		forecast_days: days,
 		timezone: 'auto',
