@@ -17,7 +17,9 @@
     "start": "cross-env DOTENV_CONFIG_PATH=./config/.env.production node -r dotenv/config -r module-alias/register ./dist/server.js",
     "sync": "delay 1s && browser-sync start --config bs-config.js",
     "test": "cross-env NODE_ENV=test vitest",
-    "type-check": "tsc -b --noEmit"
+    "type-check": "tsc -b --noEmit",
+    "docker:up": "docker compose --env-file ./config/.env.production up -d --build",
+    "docker:down": "docker compose down"
   },
   "engines": {
     "node": ">=20.0.0"
